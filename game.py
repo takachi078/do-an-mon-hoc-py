@@ -15,6 +15,7 @@ from scripts.spark import Spark
 class Game:
     def __init__(self):
         pygame.init()
+        pygame.font.init()
 
         pygame.display.set_caption('ninja game')
         self.screen = pygame.display.set_mode((640, 480))
@@ -222,4 +223,131 @@ class Game:
             pygame.display.update()
             self.clock.tick(60)
 
-Game().run()
+def draw_text(surface, text, size, color, pos):
+
+    if not pygame.font.get_init():
+        pygame.font.init()
+
+    font = pygame.font.SysFont("Arial", size)
+
+    text_surface = font.render(text, True, color)
+
+    rect = text_surface.get_rect(center=pos)
+
+    surface.blit(text_surface, rect)
+
+def main_menu():
+
+    screen = pygame.display.set_mode((640, 480))
+
+    pygame.display.set_caption("Ninja Game")
+
+    clock = pygame.time.Clock()
+
+    # LOAD BACKGROUND IMAGE
+    menu_bg = pygame.image.load(
+    'data/images/menu_bg.png'
+).convert()
+
+    menu_bg = pygame.transform.scale(
+    menu_bg,
+    (640, 480)
+)
+
+    while True:
+
+        screen.blit(menu_bg, (0, 0))
+
+        draw_text(
+            screen,
+            "NINJA GAME",
+            50,
+            (255, 255, 255),
+            (320, 100)
+        )
+
+        # BUTTONS
+        start_rect = pygame.Rect(220, 180, 200, 50)
+
+        option_rect = pygame.Rect(220, 260, 200, 50)
+
+        quit_rect = pygame.Rect(220, 340, 200, 50)
+
+        pygame.draw.rect(
+            screen,
+            (50, 120, 255),
+            start_rect,
+            border_radius=10
+        )
+
+        pygame.draw.rect(
+            screen,
+            (50, 120, 255),
+            option_rect,
+            border_radius=10
+        )
+
+        pygame.draw.rect(
+            screen,
+            (50, 120, 255),
+            quit_rect,
+            border_radius=10
+        )
+
+        # TEXT BUTTONS
+        draw_text(
+            screen,
+            "START",
+            35,
+            (255,255,255),
+            start_rect.center
+        )
+
+        draw_text(
+            screen,
+            "OPTION",
+            35,
+            (255,255,255),
+            option_rect.center
+        )
+
+        draw_text(
+            screen,
+            "QUIT",
+            35,
+            (255,255,255),
+            quit_rect.center
+        )
+
+        # EVENTS
+        for event in pygame.event.get():
+
+            if event.type == pygame.QUIT:
+
+                pygame.quit()
+
+                sys.exit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+
+                # START GAME
+                if start_rect.collidepoint(event.pos):
+
+                    Game().run()
+
+                # OPTION
+                if option_rect.collidepoint(event.pos):
+
+                    print("OPTION")
+
+                # QUIT
+                if quit_rect.collidepoint(event.pos):
+
+                    pygame.quit()
+
+                    sys.exit()
+
+        pygame.display.update()
+
+        clock.tick(60)
+main_menu()
